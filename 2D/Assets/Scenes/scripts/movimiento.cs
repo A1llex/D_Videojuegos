@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class movimiento : MonoBehaviour{
 
+    public float fuerzasalto = 400f;
     public bool saltando = false;
     // Start is called before the first frame update
     void Start()
@@ -16,19 +17,40 @@ public class movimiento : MonoBehaviour{
     {
         if (Input.GetKey("left"))
         {
-            gameObject.transform.Translate(-50f *Time.deltaTime,0,0);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f * Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moviendose",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
         }
 
         if (Input.GetKey("right"))
         {
-            gameObject.transform.Translate(-50f *Time.deltaTime,0,0);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f * Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moviendose",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
         }
 
-        if (Input.GetKey("space"))
+        if (!Input.GetKey("right") && !Input.GetKey("left"))
         {
-            gameObject.transform.Translate(-50f *Time.deltaTime,0,0);
+            gameObject.GetComponent<Animator>().SetBool("moviendose",false);
+        }
+        
+
+        if (Input.GetKeyDown("up") && !saltando)
+        {
+            saltando = true;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,fuerzasalto));
         }
 
      
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.transform.tag == "suelo")
+        {
+            saltando = false;
+        }
+        
     }
 }
