@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class movimiento : MonoBehaviour{
 
+    [SerializeField]
+    GameObject bala;
     public float fuerzasalto = 400f;
     public bool saltando = false;
     // Start is called before the first frame update
@@ -41,7 +43,17 @@ public class movimiento : MonoBehaviour{
             gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,fuerzasalto));
         }
 
+        if (Input.GetKeyDown("fire") )
+        {
+            disparando = true;
+            shoot();
+        }
+
      
+    }
+
+    private void shoot(){
+        Instantiate(bala);
     }
 
 
