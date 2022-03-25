@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Disparar : MonoBehaviour
 {
-    private bool flp = true;
+    public Transform posinicio;
+    public float tiempoEntreDisparos;
+    public bool puedeDisparar = true;
+    public GameObject prefabBala;
+    private bool flp ;
     // Start is called before the first frame update
     void Start()
     {
-    gameObject.GetComponent<SpriteRenderer>().flipX = flp;
-    flp = !flp;
-        
+        posinicio = transform;
     }
 
     // Update is called once per frame
@@ -18,25 +20,22 @@ public class Disparar : MonoBehaviour
     {
     if (Input.GetButtonDown("Fire1") )
         {
-            Debug.Log("Disparo");
-            //disparando = true;
-            //shoot();
+            if (puedeDisparar && this.prefabBala != null)
+            {
+                Debug.Log("dispara");
+                flp = gameObject.GetComponent<SpriteRenderer>().flipX;
+                GameObject g = Instantiate(this.prefabBala, (posinicio.position+ 2*(Vector3.right*(flp ? 1 : -1)) ),Quaternion.identity);
+                g.GetComponent<Bala>().derecha = flp;
+                StartCoroutine(BloquearDisparo(tiempoEntreDisparos));
+            }
         }    
     }
 
-    public void Disparar() {
-        // Completar: Instanciar un proyectil, aplicarle la rotación objetivo y
-        // bloquear el disparo del arma por  el tiempo entre disparos.
-        // Consultar el script InstanciaBonificador para pistas sobre como
-        // instanciar objetos.
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(
-            target.position - transform.position
-        );
-        if (this.prefabBala != null)
-        {
-            Instantiate(this.prefabBala, boquilla.position, rotacionObjetivo);
-            StartCoroutine(BloquearDisparo(tiempoEntreDisparos));
-        }
+    public IEnumerator BloquearDisparo(float tiempo) {
+        // Completar: Bloquear el disparo del arma por el tiempo dado
+        this.puedeDisparar = false;
+        yield return new WaitForSeconds(tiempo);
+        this.puedeDisparar = true;
     }
 
     
